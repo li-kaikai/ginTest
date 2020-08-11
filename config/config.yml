@@ -1,0 +1,12 @@
+runmode: release
+http:
+  port: 10000
+mysql:
+  go_test:
+    addr: go:844dc_ABC@tcp(localhost:3306)/go_test?timeout=1s&readTimeout=1s&writeTimeout=1s&parseTime=true&loc=Local&charset=utf8mb4,utf8
+    maxOpenConns: 100
+    maxIdleConns: 5
+redis:
+  host: 127.0.0.1
+  password: 123456
+  port: 6379
