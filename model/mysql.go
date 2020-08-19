@@ -7,26 +7,29 @@ import (
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
 )
 
-var dbInit *gorm.DB
-
 func init() {
 
-	dbInit = getDb()
-
-	_ = dbInit.Close()
+	dbInit("GoTest")
 
 }
 
-func getDb() *gorm.DB {
+func dbInit(dbName string) (db *gorm.DB) {
 
-	dbInit, err := gorm.Open("mysql", config.Dft.Get().Mysql.GoTest.Addr)
+	var addr string
+	if dbName == "GoTest2" {
+		addr = config.Dft.Get().Mysql.GoTest2.Addr
+	} else {
+		addr = config.Dft.Get().Mysql.GoTest.Addr
+	}
+
+	db, err := gorm.Open("mysql", addr)
 	if err != nil {
 		panic(err.Error())
 	}
 
 	// 禁用默认表名的复数形式，如果置为 true，则 `User` 的默认表名是 `user`
-	dbInit.SingularTable(true)
+	db.SingularTable(true)
 
-	return dbInit
+	return
 
 }

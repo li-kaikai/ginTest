@@ -16,3 +16,12 @@ func GetUserInfoById(context *gin.Context) {
 	})
 
 }
+
+func UpdateById(context *gin.Context) {
+
+	context.JSON(http.StatusOK, gin.H{
+		"code": http.StatusOK,
+		"data": service.UpdateById(context),
+	})
+
+}

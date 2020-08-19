@@ -12,21 +12,30 @@ type User struct {
 	Age  int
 }
 
+var db = dbInit("GoTest")
+
 func (User) TableName() string {
 	return "user"
 }
 
 func GetUserInfoById(id int) map[string]interface{} {
 
-	dbInit = getDb()
-
 	user := User{}
 
-	dbInit.First(&user, id)
+	db.First(&user, id)
 
 	data := struct2Map(user)
 
 	return data
+
+}
+
+func UpdateById(id int, userInfo map[string]interface{}) bool {
+
+	// 使用 map 更新多个属性，只会更新其中有变化的属性
+	db.Model(&User{Id: id}).UpdateColumn(userInfo)
+
+	return true
 
 }
 

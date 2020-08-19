@@ -40,6 +40,11 @@ type cfg struct {
 			MaxOpenConns int    `yaml:"maxOpenConns"`
 			MaxIdleConns int    `yaml:"maxIdleConns"`
 		} `yaml:"go_test"`
+		GoTest2 struct {
+			Addr         string `yaml:"addr"`
+			MaxOpenConns int    `yaml:"maxOpenConns"`
+			MaxIdleConns int    `yaml:"maxIdleConns"`
+		} `yaml:"go_test2"`
 	} `yaml:"mysql"`
 }
 
