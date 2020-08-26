@@ -40,47 +40,14 @@ type Number2 interface {
 
 func main() {
 
-	userInfo := model.GetUserInfoById(1)
-
-	println(userInfo)
-
-	//age := "18"
-	//id := "2"
-	//name := "lkklkk"
-	//
-	//ageInt, err1 := strconv.Atoi(age)
-	//if err1 != nil {
-	//    panic(err1.Error())
-	//}
-	//
-	//idInt, err2 := strconv.Atoi(id)
-	//if err2 != nil {
-	//    panic(err1.Error())
-	//}
-	//
 	//userInfo := map[string]interface{}{
-	//    "name": name,
-	//    "age":  ageInt,
+	//	"name": "lkkkk",
+	//	"age":  "12",
 	//}
 	//
-	//_ = model.UpdateById(idInt, userInfo)
-	//
-	//println(idInt)
+	//model.UpdateById(1, userInfo)
 
-	//user := service.GetUserInfoTest(1)
-	//
-	////println("%T", user)
-	//
-	//userJson, err := json.Marshal(user)
-	//if err != nil {
-	//    panic("user json error")
-	//}
-	//
-	//a := string(userJson)
-	//
-	//fmt.Println(a)
-	//
-	////fmt.Printf("%+v\n", userJson)
-	//fmt.Printf("%T\n", a)
+	re := model.GetUserInfoById(2)
+	println(re)
 
 }
