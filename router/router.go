@@ -1,6 +1,7 @@
 package router
 
 import (
+	"ginTest/middleware"
 	"github.com/gin-gonic/gin"
 	_ "github.com/go-sql-driver/mysql"
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
@@ -9,6 +10,8 @@ import (
 func Init() {
 
 	router := gin.Default()
+
+	router.Use(middleware.Logger())
 
 	includeRouter(router)
 

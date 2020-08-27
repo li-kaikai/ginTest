@@ -26,9 +26,8 @@ func init() {
 
 func (r rdber) GetRdb() (goClient *redis.Client) {
 
-	addr := config.Dft.Get().Redis.Host + ":" + strconv.Itoa(config.Dft.Get().Redis.Port)
 	r.rdbClient = redis.NewClient(&redis.Options{
-		Addr:     addr,
+		Addr:     config.Dft.Get().Redis.Host + ":" + strconv.Itoa(config.Dft.Get().Redis.Port),
 		Password: config.Dft.Get().Redis.Pass,
 		DB:       0, // use default DB
 	})
