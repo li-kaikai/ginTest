@@ -28,8 +28,7 @@ func (r rdber) GetRdb() (goClient *redis.Client) {
 
 	addr := config.Dft.Get().Redis.Host + ":" + strconv.Itoa(config.Dft.Get().Redis.Port)
 	r.rdbClient = redis.NewClient(&redis.Options{
-		Addr: addr,
-		//Addr:     "localhost:6379",
+		Addr:     addr,
 		Password: config.Dft.Get().Redis.Pass,
 		DB:       0, // use default DB
 	})
@@ -56,8 +55,7 @@ func (r *rdber) Get(key string) (val interface{}) {
 func (r *rdber) Set(key string, value string, expiration time.Duration) bool {
 	expiration *= 1000000
 	Rdb := r.GetRdb()
-	setRe, err := Rdb.Set("key", "111value", 0).Result()
-	//setRe, err := Rdb.Set(key, value, expiration).Result()
+	setRe, err := Rdb.Set(key, value, expiration).Result()
 	if err != nil {
 		panic(err)
 	}
@@ -80,7 +78,7 @@ func (r *rdber) Del(key string) bool {
 		println("redis del succeeded")
 		return true
 	} else {
-		println("redis del failed")
+		println("redis del failed or key (" + key + ") not exist")
 		return false
 	}
 }

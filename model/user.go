@@ -35,7 +35,14 @@ func GetUserInfoById(id int) map[string]interface{} {
 
 	data := struct2Map(user)
 
-	setUserRedis(key, user)
+	redisChan := make(chan bool)
+
+	go func() {
+		setRe := setUserRedis(key, user)
+		redisChan <- setRe
+	}()
+
+	<-redisChan
 
 	return data
 
@@ -43,12 +50,19 @@ func GetUserInfoById(id int) map[string]interface{} {
 
 func UpdateById(id int, userInfo map[string]interface{}) bool {
 
+	redisChan := make(chan bool)
+
 	// 使用 map 更新多个属性，只会更新其中有变化的属性
 	db.Model(&User{Id: id}).UpdateColumn(userInfo)
 
 	key := getUserRedisKey(id)
 
-	go Redis.Del(key)
+	go func() {
+		delRe := Redis.Del(key)
+		redisChan <- delRe
+	}()
+
+	<-redisChan
 
 	return true
 
@@ -85,10 +99,10 @@ func getUserRedisKey(id int) string {
 	return key
 }
 
-func setUserRedis(key string, user User) {
+func setUserRedis(key string, user User) bool {
 	userJson, _ := json.Marshal(user)
 
 	userString := string(userJson)
 
-	Redis.Set(key, userString, 0)
+	return Redis.Set(key, userString, 0)
 }
