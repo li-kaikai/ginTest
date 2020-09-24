@@ -3,24 +3,27 @@ package model
 import (
 	"encoding/json"
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/goinggo/mapstructure"
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
 	"reflect"
 	"strconv"
 )
 
 type User struct {
-	Id   int `gorm:"primary_key"`
-	Name string
-	Age  int
+	Id       int `gorm:"primary_key"`
+	Openid   string
+	Nickname string
+	Avatar   string
+	Gender   int
 }
 
-var db = dbInit("GoTest")
+//var db = dbInit()
 
 func (User) TableName() string {
 	return "user"
 }
 
-func GetUserInfoById(id int) map[string]interface{} {
+func GetInfoById(id int) map[string]interface{} {
 
 	key := getUserRedisKey(id)
 
@@ -32,6 +35,10 @@ func GetUserInfoById(id int) map[string]interface{} {
 	user := User{}
 
 	db.First(&user, id)
+
+	if user.Id <= 0 {
+		panic("用户不存在")
+	}
 
 	data := struct2Map(user)
 
@@ -53,7 +60,10 @@ func UpdateById(id int, userInfo map[string]interface{}) bool {
 	redisChan := make(chan bool)
 
 	// 使用 map 更新多个属性，只会更新其中有变化的属性
-	db.Model(&User{Id: id}).UpdateColumn(userInfo)
+	re := db.Model(&User{Id: id}).UpdateColumn(userInfo)
+	if re.Error != nil {
+		panic(re.Error)
+	}
 
 	key := getUserRedisKey(id)
 
@@ -65,6 +75,29 @@ func UpdateById(id int, userInfo map[string]interface{}) bool {
 	<-redisChan
 
 	return true
+
+}
+
+func CreateUser(userInfo map[string]interface{}) int {
+
+	user := User{}
+
+	if err := mapstructure.Decode(userInfo, &user); err != nil {
+		panic(err)
+	}
+
+	re := db.Create(&user)
+
+	if re.Error != nil {
+		panic(re.Error)
+	}
+
+	id := 0
+	if val, ok := re.Value.(*User); ok {
+		id = val.Id
+	}
+
+	return id
 
 }
 

@@ -1,39 +1,40 @@
 package controller
 
 import (
+	"net/http"
+
 	"ginTest/service"
 	"github.com/gin-gonic/gin"
 	_ "github.com/go-sql-driver/mysql"
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
-	"net/http"
 )
 
-func GetUserInfoById(context *gin.Context) {
+func GetOrderInfoByOrderNum(context *gin.Context) {
 
 	defer service.ReturnError(context)
 
 	context.JSON(http.StatusOK, gin.H{
 		"errNum": 0,
 		"errMsg": "success",
-		"data":   service.GetUserInfoById(context),
+		"data":   service.GetOrderInfoByOrderNum,
 	})
 
 }
 
-func CreateUser(context *gin.Context) {
+func CreateOrder(context *gin.Context) {
 
 	context.JSON(http.StatusOK, gin.H{
 		"code": http.StatusOK,
-		"data": service.Create(context),
+		"data": service.CreateOrder(context),
 	})
 
 }
 
-func UpdateById(context *gin.Context) {
+func UpdateOrderByOrderNum(context *gin.Context) {
 
 	context.JSON(http.StatusOK, gin.H{
 		"code": http.StatusOK,
-		"data": service.UpdateById(context),
+		"data": service.UpdateOrderByOrderNum,
 	})
 
 }

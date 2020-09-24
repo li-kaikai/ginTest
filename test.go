@@ -1,6 +1,10 @@
 package main
 
 import (
+	"encoding/json"
+	"fmt"
+	"runtime/debug"
+
 	"ginTest/model"
 	_ "github.com/go-sql-driver/mysql"
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
@@ -40,14 +44,42 @@ type Number2 interface {
 
 func main() {
 
-	//userInfo := map[string]interface{}{
-	//	"name": "lkkkk",
-	//	"age":  "12",
-	//}
-	//
-	//model.UpdateById(1, userInfo)
+	defer func() {
+		if p := recover(); p != nil {
+			fmt.Printf("panic recover! p: %v", p)
+			debug.PrintStack()
+		}
+	}()
 
-	re := model.GetUserInfoById(2)
-	println(re)
+	userId := 1
+	orderInfoMap := map[string]interface{}{
+		"GoodsId":  1,
+		"MealTime": 111111111,
+		"Total":    100,
+		"Status":   0,
+		"Remark":   "",
+	}
+
+	jsonStr := `[
+				{"GoodsId":1,"Num":1,"goodsIngredientIds":"1,2,3"},
+				{"GoodsId":2,"Num":12,"goodsIngredientIds":"1,3"}
+	]`
+	goodsInfoSlice := make([]map[string]interface{}, 0)
+	err := json.Unmarshal([]byte(jsonStr), &goodsInfoSlice)
+	if err != nil {
+		panic("json反序列化失败")
+	}
+
+	orderInfo := model.CreateOrder(userId, orderInfoMap)
+
+	model.CreateOrderDetails(orderInfo.OrderNum, goodsInfoSlice)
+
+	//
+	// userInfo := map[string]interface{}{
+	//	"nickname": "lkkame",
+	// }
+
+	// model.UpdateById(3, userInfo)
+	// model.CreateUser(userInfo)
 
 }

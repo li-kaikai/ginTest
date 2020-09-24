@@ -20,6 +20,9 @@ func Init() {
 }
 
 func includeRouter(router *gin.Engine) {
+
 	userRouter(router)
-	authRouter(router)
+
+	orderRouter(router)
+
 }

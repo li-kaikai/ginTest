@@ -35,16 +35,11 @@ type cfg struct {
 		Pass string `yaml:"password"`
 	} `yaml:"redis"`
 	Mysql struct {
-		GoTest struct {
+		Order struct {
 			Addr         string `yaml:"addr"`
 			MaxOpenConns int    `yaml:"maxOpenConns"`
 			MaxIdleConns int    `yaml:"maxIdleConns"`
-		} `yaml:"go_test"`
-		GoTest2 struct {
-			Addr         string `yaml:"addr"`
-			MaxOpenConns int    `yaml:"maxOpenConns"`
-			MaxIdleConns int    `yaml:"maxIdleConns"`
-		} `yaml:"go_test2"`
+		} `yaml:"order"`
 	} `yaml:"mysql"`
 }
 

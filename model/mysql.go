@@ -9,18 +9,15 @@ import (
 
 func init() {
 
-	dbInit("GoTest")
+	dbInit()
 
 }
 
-func dbInit(dbName string) (db *gorm.DB) {
+var db = dbInit()
 
-	var addr string
-	if dbName == "GoTest2" {
-		addr = config.Dft.Get().Mysql.GoTest2.Addr
-	} else {
-		addr = config.Dft.Get().Mysql.GoTest.Addr
-	}
+func dbInit() (db *gorm.DB) {
+
+	addr := config.Dft.Get().Mysql.Order.Addr
 
 	db, err := gorm.Open("mysql", addr)
 	if err != nil {
@@ -29,6 +26,9 @@ func dbInit(dbName string) (db *gorm.DB) {
 
 	// 禁用默认表名的复数形式，如果置为 true，则 `User` 的默认表名是 `user`
 	db.SingularTable(true)
+
+	// 开启日志
+	db.LogMode(true)
 
 	return
 
