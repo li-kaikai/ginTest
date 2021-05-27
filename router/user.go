@@ -12,6 +12,7 @@ func userRouter(router *gin.Engine) {
 	userRouter := router.Group("user")
 	{
 		userRouter.GET("get/:id", controller.GetUserInfoById)
+		userRouter.GET("update/:id/:nickname/:avatar", controller.UpdateById)
 		userRouter.GET("create/:openid/:nickname/:avatar/:gender", controller.CreateUser)
 	}
 

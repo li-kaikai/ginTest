@@ -1,10 +1,11 @@
 package model
 
 import (
-	"ginTest/config"
-	"github.com/go-redis/redis"
 	"strconv"
 	"time"
+
+	"ginTest/config"
+	"github.com/go-redis/redis"
 )
 
 var Redis Rdb

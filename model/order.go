@@ -2,6 +2,7 @@ package model
 
 import (
 	"math/rand"
+	"reflect"
 	"strconv"
 	"time"
 
@@ -13,7 +14,8 @@ import (
 type Order struct {
 	Id       int `gorm:"primary_key,column:id"`
 	OrderNum string
-	MealTime int
+	MealTime string
+	MealCode []uint8
 	Total    int
 	Status   int
 	UserId   int
@@ -60,5 +62,20 @@ func GetOrderNum() (orderNum string) {
 func getRandNum(min int, max int) int {
 
 	return rand.Intn(max-min) + min
+
+}
+
+func GetInfoByOrderNum(orderNum string) map[string]interface{} {
+
+	order := Order{}
+
+	db.First(&order, Order{
+		OrderNum: orderNum,
+	})
+
+	reflectT := reflect.TypeOf(order)
+	reflectV := reflect.ValueOf(order)
+
+	return struct2Map(reflectT, reflectV)
 
 }

@@ -12,6 +12,7 @@ func orderRouter(router *gin.Engine) {
 	userRouter := router.Group("order")
 	{
 		userRouter.GET("get/:orderNum", controller.GetOrderInfoByOrderNum)
+		userRouter.POST("get", controller.GetOrderInfoByOrderNum)
 		userRouter.GET("create", controller.CreateOrder)
 	}
 

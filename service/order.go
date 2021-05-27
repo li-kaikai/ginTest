@@ -41,8 +41,19 @@ func CreateOrder(context *gin.Context) bool {
 
 }
 
-func GetOrderInfoByOrderNum(ctx *gin.Context) {
+func GetOrderInfoByOrderNum(ctx *gin.Context) (order map[string]interface{}) {
 
+	orderNum := ctx.Param("orderNum")
+	if orderNum == "" {
+		orderNum = ctx.PostForm("orderNum")
+		if orderNum == "" {
+			panic("orderNum参数不能为空")
+		}
+	}
+
+	order = model.GetInfoByOrderNum(orderNum)
+
+	return
 }
 
 func UpdateOrderByOrderNum(ctx *gin.Context) {

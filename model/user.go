@@ -2,11 +2,12 @@ package model
 
 import (
 	"encoding/json"
+	"reflect"
+	"strconv"
+
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/goinggo/mapstructure"
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
-	"reflect"
-	"strconv"
 )
 
 type User struct {
@@ -16,8 +17,6 @@ type User struct {
 	Avatar   string
 	Gender   int
 }
-
-//var db = dbInit()
 
 func (User) TableName() string {
 	return "user"
@@ -29,7 +28,11 @@ func GetInfoById(id int) map[string]interface{} {
 
 	redisRe := Redis.Get(key)
 	if redisRe != false {
-		return redisRe2Map(redisRe)
+		userMap := redisRe2Map(redisRe)
+		id := int(userMap["Id"].(float64))
+		if id <= 0 {
+			panic("用户不存在")
+		}
 	}
 
 	user := User{}
@@ -40,7 +43,10 @@ func GetInfoById(id int) map[string]interface{} {
 		panic("用户不存在")
 	}
 
-	data := struct2Map(user)
+	reflectT := reflect.TypeOf(user)
+	reflectV := reflect.ValueOf(user)
+
+	data := struct2Map(reflectT, reflectV)
 
 	redisChan := make(chan bool)
 
@@ -83,7 +89,7 @@ func CreateUser(userInfo map[string]interface{}) int {
 	user := User{}
 
 	if err := mapstructure.Decode(userInfo, &user); err != nil {
-		panic(err)
+		panic(err.Error())
 	}
 
 	re := db.Create(&user)
@@ -99,32 +105,6 @@ func CreateUser(userInfo map[string]interface{}) int {
 
 	return id
 
-}
-
-func struct2Map(user User) (data map[string]interface{}) {
-
-	t := reflect.TypeOf(user)
-	v := reflect.ValueOf(user)
-
-	data = make(map[string]interface{})
-
-	if t.NumField() > 0 {
-		for i := 0; i < t.NumField(); i++ {
-			data[t.Field(i).Name] = v.Field(i).Interface()
-		}
-	}
-
-	return
-}
-
-func redisRe2Map(redisRe interface{}) map[string]interface{} {
-	dataByte := []byte(redisRe.(string))
-	data := make(map[string]interface{})
-	err := json.Unmarshal(dataByte, &data)
-	if err != nil {
-		panic(err)
-	}
-	return data
 }
 
 func getUserRedisKey(id int) string {

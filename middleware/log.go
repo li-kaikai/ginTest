@@ -2,19 +2,20 @@ package middleware
 
 import (
 	"fmt"
+	"os"
+	"time"
+
 	"github.com/gin-gonic/gin"
 	"github.com/lestrrat/go-file-rotatelogs"
 	"github.com/rifflock/lfshook"
 	"github.com/sirupsen/logrus"
-	"os"
-	"time"
 )
 
 func Logger() gin.HandlerFunc {
 
 	logClient := logrus.New()
 
-	//禁止logrus的输出
+	// 禁止logrus的输出
 	src, err := os.OpenFile(os.DevNull, os.O_APPEND|os.O_WRONLY, os.ModeAppend)
 	if err != nil {
 		fmt.Println("err", err)
@@ -42,27 +43,22 @@ func Logger() gin.HandlerFunc {
 		c.Next()
 		// 结束时间
 		end := time.Now()
-		//执行时间
+		// 执行时间
 		latency := end.Sub(start)
 
-		path := c.Request.URL.Path
-
-		clientIP := c.ClientIP()
-		method := c.Request.Method
-		statusCode := c.Writer.Status()
-
-		//设置日志格式
+		// 设置日志格式
 		logClient.SetFormatter(&logrus.JSONFormatter{
 			TimestampFormat: "2006-01-02 15:04:05",
 		})
 
 		// 日志格式
 		logClient.WithFields(logrus.Fields{
-			"statusCode": statusCode,
-			"latency":    latency,
-			"clientIP":   clientIP,
-			"method":     method,
-			"path":       path,
+			"requestTime": start.Format("2006-01-02 15:04:05"),
+			"statusCode":  c.Writer.Status(),
+			"latency":     latency,
+			"clientIP":    c.ClientIP(),
+			"method":      c.Request.Method,
+			"path":        c.Request.URL.Path,
 		}).Info()
 
 	}

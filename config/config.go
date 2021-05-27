@@ -2,9 +2,10 @@ package config
 
 import (
 	"flag"
-	"gopkg.in/yaml.v2"
 	"io/ioutil"
 	"sync"
+
+	"gopkg.in/yaml.v2"
 )
 
 var (

@@ -14,18 +14,21 @@ func GetOrderInfoByOrderNum(context *gin.Context) {
 	defer service.ReturnError(context)
 
 	context.JSON(http.StatusOK, gin.H{
-		"errNum": 0,
-		"errMsg": "success",
-		"data":   service.GetOrderInfoByOrderNum,
+		"errCode": 1,
+		"errMsg":  "success",
+		"data":    service.GetOrderInfoByOrderNum(context),
 	})
 
 }
 
 func CreateOrder(context *gin.Context) {
 
+	defer service.ReturnError(context)
+
 	context.JSON(http.StatusOK, gin.H{
-		"code": http.StatusOK,
-		"data": service.CreateOrder(context),
+		"errCode": 1,
+		"errMsg":  "success",
+		"data":    service.CreateOrder(context),
 	})
 
 }

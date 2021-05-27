@@ -1,11 +1,12 @@
 package service
 
 import (
+	"strconv"
+
 	"ginTest/model"
 	"github.com/gin-gonic/gin"
 	_ "github.com/go-sql-driver/mysql"
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
-	"strconv"
 )
 
 func GetUserInfoById(context *gin.Context) (user map[string]interface{}) {
@@ -27,22 +28,17 @@ func GetUserInfoById(context *gin.Context) (user map[string]interface{}) {
 func UpdateById(context *gin.Context) (user bool) {
 
 	id := context.Param("id")
-	name := context.Param("name")
-	age := context.Param("age")
+	nickname := context.Param("nickname")
+	avatar := context.Param("avatar")
 
-	ageInt, err1 := strconv.Atoi(age)
-	if err1 != nil {
-		panic(err1.Error())
-	}
-
-	idInt, err2 := strconv.Atoi(id)
-	if err2 != nil {
-		panic(err1.Error())
+	idInt, err := strconv.Atoi(id)
+	if err != nil {
+		panic(err.Error())
 	}
 
 	userInfo := map[string]interface{}{
-		"name": name,
-		"age":  ageInt,
+		"Nickname": nickname,
+		"Avatar":   avatar,
 	}
 
 	user = model.UpdateById(idInt, userInfo)
@@ -58,11 +54,16 @@ func Create(context *gin.Context) (user map[string]interface{}) {
 	avatar := context.Param("avatar")
 	gender := context.Param("gender")
 
+	genderInt, err := strconv.Atoi(gender)
+	if err != nil {
+		panic(err.Error())
+	}
+
 	userInfo := map[string]interface{}{
 		"openid":   openid,
 		"nickname": nickname,
 		"avatar":   avatar,
-		"gender":   gender,
+		"gender":   genderInt,
 	}
 
 	userId := model.CreateUser(userInfo)
